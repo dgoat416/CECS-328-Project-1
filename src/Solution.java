@@ -19,17 +19,24 @@ public class Solution
 	 * equivalent to sqrt(N/D)
 	 * meaning a/b must be the fraction in the tree such that
 	 * abs(Da^2 - Nb^2) <= b
-	 * @param N = Numerator
-	 * @param D = Denominator
+	 * @param M = Numerator
+	 * @param N = Denominator
 	 */
-	public static void findFractionAB(BigInteger N, BigInteger D)
+	public static void findFractionAB(BigInteger M, BigInteger N)
 	{
 		// store the value we are looking for N / B
-		BigDecimal findAB = new BigDecimal(N).divide(new BigDecimal(D), RoundingMode.);
+		BigDecimal findAB = new BigDecimal(M).divide(new BigDecimal(N), RoundingMode.HALF_UP);
 		ArrayList<BigDecimal> fractionalTree = new ArrayList<BigDecimal>();
+		
+		// hold the points to create the fractionalTree
 		ArrayList<Point> points = new ArrayList<Point>();
 		points.add(new Point(0, 1));
-		points.add(new Point(1,0));
+		points.add(new Point(1, 0));
+		
+		
+		
+		// head of tree
+		fractionalTree.add(new BigDecimal(1 / 1));
 		
 		
 		
@@ -41,20 +48,20 @@ public class Solution
 	{
 		// TODO Auto-generated method stub
 		Scanner scan = null;
+		BigInteger M = null;
 		BigInteger N = null;
-		BigInteger D = null;
 		
 		try
 		{
 			File inFile = new File("input_1.txt");
 			scan = new Scanner(inFile);
 			
-			// get the numerator (N) and denominator (D)
+			// get the numerator (M) and denominator (N)
+			M = scan.nextBigInteger();
 			N = scan.nextBigInteger();
-			D = scan.nextBigInteger();
 			
 			// where the magic happens
-			findFractionAB(N, D);
+			findFractionAB(M, N);
 			
 		}
 		catch(Exception e)
