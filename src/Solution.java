@@ -1,8 +1,10 @@
 import java.io.File;
-import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,19 +18,19 @@ public class Solution
 	
 	public static class myPoint implements Comparable<myPoint>
 	{
-		public BigDecimal x;
-		public BigDecimal y;
+		public BigInteger x;
+		public BigInteger y;
 		
 		
 		// Parameterized Constructor
 		public myPoint()
 		{
-			x = new BigDecimal(0);
-			y = new BigDecimal(0);
+			x = new BigInteger("0");
+			y = new BigInteger("0");
 		}
 				
 		// Parameterized Constructor
-		public myPoint(BigDecimal _x, BigDecimal _y)
+		public myPoint(BigInteger _x, BigInteger _y)
 		{
 			x = _x;
 			y = _y;
@@ -74,6 +76,17 @@ public class Solution
 	}
 
 	
+	public static void traverseInOrder(List<?> binaryTree)
+	{
+		int index = 0;
+		
+		while (binaryTree.size() >= 1)
+		{
+			index = (int) Math.round(binaryTree.size() / 2.0);
+			System.out.print(binaryTree.get(index));
+		}
+	}
+	
 	/** 
 	 * Method to find the fraction a/b that is approximately
 	 * equivalent to sqrt(N/D)
@@ -82,16 +95,25 @@ public class Solution
 	 * @param M = Numerator
 	 * @param N = Denominator
 	 */
-	public static void findFractionAB(BigInteger M, BigInteger N)
+	public static myPoint findFractionAB(BigInteger M, BigInteger N)
 	{
+		// Set precision to 10 
+        MathContext mc = new MathContext(10); 
 		// store the value we are looking for M / N
-		BigDecimal findAB = new BigDecimal(M).divide(new BigDecimal(N), RoundingMode.HALF_UP);
-		ArrayList<myPoint> fractionalTree = new ArrayList<myPoint>();
+		BigInteger findAB = null; 
+//		new BigInteger(M).divide(new BigInteger(N), mc);
+  
+        // calculate square root of BigInteger 
+        // using sqrt() method 
+//        findAB = findAB.sqrt(mc); 
+        
+		List<myPoint> fractionalTree = new ArrayList<myPoint>();
+		List<myPoint> nodesCurrentLvl = new ArrayList<myPoint>();
 		
 		// hold the points to create the fractionalTree
-		ArrayList<myPoint> points = new ArrayList<myPoint>();
-		points.add(new myPoint(new BigDecimal(0), new BigDecimal(1)));
-		points.add(new myPoint(new BigDecimal(1), new BigDecimal(0)));
+		List<myPoint> points = new ArrayList<myPoint>();
+		points.add(new myPoint(new BigInteger("0"), new BigInteger("1")));
+		points.add(new myPoint(new BigInteger("1"), new BigInteger("0")));
 		
 		myPoint addend1;
 		myPoint addend2;
@@ -100,7 +122,7 @@ public class Solution
 		// where to insert into points
 		double location = 0;
 		
-		for (int level = 0; level < 4; level++)
+		while (true)
 		{
 			for (int additions = 0; additions < points.size() - 1; additions++)
 			{
@@ -108,29 +130,48 @@ public class Solution
 				addend1 = points.get(additions);
 				addend2 = points.get(additions + 1);
 				sum = new myPoint(addend1.x.add(addend2.x), addend1.y.add(addend2.y));
-				// get average & round to highest integer value
+				
+				// get average & round to highest integer value to get the index
 				location = (additions + additions + 1) / 2.0;
-//				Math.rint(location);
 				
 				// add the sum to the arrayList in the correct postition
 				points.add((int)Math.round(location), sum);
 				
 				// add to binary tree
-				fractionalTree.add(sum);
+//				fractionalTree.add(sum);
+				nodesCurrentLvl.add(sum);
 				additions++;
 			}
+			
+			// don't check for first node in the tree
+//			if (nodesCurrentLvl.size() == 1)
+//				continue;
+				
+//			if (nodesCurrentLvl.size() > 1)
+//			{
+				BigInteger b = null;
+				BigInteger n = N;
+				BigInteger m = M;
+				// search for M / N
+				for (myPoint element : nodesCurrentLvl)
+				{
+					findAB = N.multiply(element.x.pow(2)).subtract(M.multiply(element.y.pow(2)));
+					findAB = findAB.abs();
+					b = element.y;
+					if (findAB.compareTo(b) < 0)
+						return element;
+				} 
+
+			// add nodes to fractional Tree and reset nodes of the current level
+			fractionalTree.addAll(nodesCurrentLvl);
+			nodesCurrentLvl.clear();
+
 		}
 		
-		for (myPoint element : fractionalTree)
-		{
-			System.out.print(element + " ");
-		}
-//		// head of tree
-//		fractionalTree.add(new BigDecimal(1 / 1));
-		
-		
-		
-//		for (int i = 0; i < 7; i++)
+//		for (myPoint element : fractionalTree)
+//		{
+//			System.out.print(element + " ");
+//		}
 			
 	}
 	
