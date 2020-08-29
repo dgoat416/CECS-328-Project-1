@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -76,15 +78,30 @@ public class Solution
 	}
 
 	
-	public static void traverseInOrder(List<?> binaryTree)
+	public static void printTree(List<myPoint> binaryTree) throws FileNotFoundException
 	{
-		int index = 0;
+		int count = 0;
+		int level = 0;
 		
-		while (binaryTree.size() >= 1)
+		File outFile = new File("output.txt");
+		PrintWriter writer = new PrintWriter(outFile);
+		// print out tree by level
+		for (myPoint x :binaryTree)
 		{
-			index = (int) Math.round(binaryTree.size() / 2.0);
-			System.out.print(binaryTree.get(index));
+			count++;
+			writer.print(x + " ");
+			
+			if (Math.pow(2, level) == count)
+				{
+					writer.print("\n");
+					level++;
+					count = 0;
+				}
+				
 		}
+		
+		// save the contents of the writer
+		writer.close();
 	}
 	
 	/** 
@@ -135,11 +152,17 @@ public class Solution
 				location = (additions + additions + 1) / 2.0;
 				
 				// add the sum to the arrayList in the correct postition
-				points.add((int)Math.round(location), sum);
+				points.add((int) Math.round(location), sum);
 				
 				// add to binary tree
 //				fractionalTree.add(sum);
 				nodesCurrentLvl.add(sum);
+				
+				myPoint mine = new myPoint(new BigInteger("16"), new BigInteger("15"));
+				if (sum.x.equals(mine.x) && sum.y.equals(mine.y))
+				{
+					nodesCurrentLvl.get(0); 
+				}
 				additions++;
 			}
 			
@@ -150,17 +173,50 @@ public class Solution
 //			if (nodesCurrentLvl.size() > 1)
 //			{
 				BigInteger b = null;
-				BigInteger n = N;
-				BigInteger m = M;
+				myPoint element = nodesCurrentLvl.get(0);
+				BigInteger minuend = N.multiply(element.x.pow(2));
+				BigInteger subtrahend = M.multiply(element.y.pow(2));
 				// search for M / N
-				for (myPoint element : nodesCurrentLvl)
-				{
+//				for (myPoint element : nodesCurrentLvl)
+//				for (int i = 0; i < nodesCurrentLvl.size(); i++)
+//				{
+//					myPoint element = nodesCurrentLvl.get(0);
 					findAB = N.multiply(element.x.pow(2)).subtract(M.multiply(element.y.pow(2)));
 					findAB = findAB.abs();
 					b = element.y;
-					if (findAB.compareTo(b) < 0)
+					if (minuend.compareTo(subtrahend) == 0 || findAB.compareTo(b) < 0)
+					{
+						try
+						{
+							printTree(fractionalTree);
+						} catch (FileNotFoundException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						// print parent index
+						// this and index
+						// and sibling node of the tree
+						
 						return element;
-				} 
+					}
+					else if (minuend.compareTo(subtrahend) < 0)
+					{
+						// go right ( remove left (first element))
+						points.remove(0);
+						
+					}
+//					else if (findAB.compareTo(b) == 0)
+//					{
+//						System.out.printf("");
+//					}
+					else if (minuend.compareTo(subtrahend) > 0)
+					{
+						// go left(remove right (last element))
+						points.remove(points.size() - 1);
+					}
+//				} 
 
 			// add nodes to fractional Tree and reset nodes of the current level
 			fractionalTree.addAll(nodesCurrentLvl);
@@ -175,6 +231,12 @@ public class Solution
 			
 	}
 	
+	private static myPoint myPoint(int i, int j)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public static void main(String[] args) 
 	{
 		// TODO Auto-generated method stub
@@ -184,7 +246,7 @@ public class Solution
 		
 		try
 		{
-			File inFile = new File("input_1.txt");
+			File inFile = new File("input_2.txt");
 			scan = new Scanner(inFile);
 			
 			// get the numerator (M) and denominator (N)
@@ -192,7 +254,8 @@ public class Solution
 			N = scan.nextBigInteger();
 			
 			// where the magic happens
-			findFractionAB(M, N);
+//			findFractionAB(new BigInteger("25"), new BigInteger("9"));
+			System.out.print(findFractionAB(M,N));
 			
 		}
 		catch(Exception e)
