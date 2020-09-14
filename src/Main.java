@@ -240,7 +240,7 @@ public class Main
 
 		try
 		{
-			File inFile = new File("input_2.txt");
+			File inFile = new File("input.txt");
 			scan = new Scanner(inFile);
 
 			// get the numerator (M) and denominator (N)
